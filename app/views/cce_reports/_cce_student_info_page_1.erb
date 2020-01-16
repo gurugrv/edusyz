@@ -1,0 +1,75 @@
+<label class="student_profile_head_label">Student Profile: </label>
+
+<div id="basic_info_1">
+    <div class="student_info_div">
+        <div class="basic_info_div">
+             <%=label_tag 'addmission_no', "Admission No."%> :<%=@student.admission_no%>
+             <div class="section_label">
+                 <%=label_tag 'Section', "Section"%> : <%=@batch.full_name%>
+             </div>
+        </div>
+        <div class="basic_info_div">
+          <%=label_tag 'roll no', "Roll No."%> : <%=@student.roll_number%>
+        </div>
+        <div class="basic_info_div">
+          <%=label_tag 'registration_no', "Registration No."%> : XXXXXXXXXXXXXXXXXX
+        </div>
+        <div class="basic_info_div">
+          <%=label_tag 'dob', "Date of Birth"%> : <%=@student.date_of_birth%>
+        </div>
+        <div class="basic_info_div">
+          <%=label_tag 'm_name', "Mother's Name"%> : <%=@student.mother_name%>
+        </div>
+        <div class="basic_info_div">
+          <%=label_tag 'f_name', "Fathers's Name"%> : <%=@student.father_name%>
+        </div>
+        <div class="basic_info_div">
+          <%=label_tag 'address', "Residential Address"%> : <%=@student.full_address%>
+        </div>
+        <div class="basic_info_div">
+          <%=label_tag 'p_no', "Phone No."%> : <%=@student.full_address%>
+        </div>
+    </div>
+    <div class="student_pic">
+      <% if @student.photo.file? %>
+        <%= image_tag @student.photo.url(:original, false) %>
+      <% else %>
+        <%= image_tag "master_student/profile/default_student.png" %>
+      <% end %>
+    </div>
+</div>
+
+
+<div id="attendance_report">
+  <div>
+       <%=label_tag 'attendance', "Attendance" ,:class=>"head_label_left"%>
+       <%=label_tag 'total_attendance_of_the_student', "Total attendance of the student"%>
+       <%=label_tag 'toatal_working_days', "Total Working days"%>
+  </div>
+  <div class="atendance_item">
+      <%=label_tag 'term1', "Term I" ,:class=>"head_label"%>
+      <%=label_tag 'total_attendance_term_1', @attendance_report[0][:total_attendance]%>
+      <%=label_tag 'total_days_term_1', @attendance_report[0][:total_day]%>
+
+  </div>
+  <div class="atendance_item">
+      <%=label_tag 'term2', "Term II" ,:class=>"head_label"%>
+      <%=label_tag 'total_attendance_term_2', @attendance_report[1][:total_attendance]%>
+      <%=label_tag 'total_days_term_2', @attendance_report[1][:total_day]%>
+  </div>
+</div>
+
+<label class="student_profile_head_label">Health Status</label>
+<div id="health_status_div">
+  <div class="basic_info_div">
+          <%=label_tag 'height', "Height"%> :<%=  set_blank_line("medium")%>
+          <%=label_tag 'weight', "Weight"%> : <%=  set_blank_line("medium")%>
+  </div>
+  <div class="basic_info_div">
+    <%=label_tag 'blood_group', "blood Group"%> : <%=(@student.blood_group.present?) ? @student.blood_group : set_blank_line("medium")%>
+    <%=label_tag 'vision', "Vision(L)"%> : <%=  set_blank_line("small")%> (R) <%=set_blank_line("small")%>
+  </div>
+  <div class="basic_info_div">
+          <%=label_tag 'dental_hygiene', "Dental Hygiene"%> :  <%=  set_blank_line("large")%>
+  </div>
+</div>

@@ -1,0 +1,146 @@
+<table id="listing" align="center" width="100%" cellpadding="1" cellspacing="1">
+  <%  if  @students.empty? or @fa_score_hash.empty?%>
+    <tr class="tr-head">
+      <td>No reports found for the search</td>
+    </tr>
+  <% else %>
+    <tr class="tr-head">
+      <td>Session</td>
+      <td><%="#{@batch.start_date.year}-#{@batch.end_date.year}"%></td>
+      <td></td>
+      <td>Exam</td>
+      <td><%="#{@batch.name}-#{@exam_group.name}"%></td>
+      <td>Subject</td>
+      <td colspan="3"><%=@subject.name%></td>
+    </tr>
+    <tr class="tr-head">
+      <td></td>
+      <td></td>
+      <td></td>
+      <%fa_1_2_set=false%>
+      <%fa_3_4_set=false%>
+      <%c1=0%>
+      <%c2=0%>
+      <%@subject.fa_groups.all(:conditions=>{:cce_exam_category_id=>@exam_group.cce_exam_category_id}).each do |ag|%>
+        <td class="col-3"><%=ag.name.split.last%> - MAX</td>
+        <td class="col-3">100</td>
+        <%if (ag.name.split.last=="FA1" or ag.name.split.last=="FA2") and fa_1_2_set==false%>
+          <%c1+=1%>
+          <%if c1==2%>
+            <td class="col-3">SA1-MAX</td>
+            <td class="col-3"><%=@subject.exams.first(:joins=>'exams',:conditions=>{:exams=>{:exam_group_id=>@exam_group.id}}).maximum_marks%></td>
+            <%c1=0%>
+            <%fa_1_2_set=true%>
+          <%end%>
+        <%elsif (ag.name.split.last=="FA3" or ag.name.split.last=="FA4") and fa_3_4_set==false%>
+          <%c2+=1%>
+          <%if c2==2%>
+            <td class="col-3">SA2-MAX</td>
+            <td class="col-3"><%=@subject.exams.first(:joins=>'exams',:conditions=>{:exams=>{:exam_group_id=>@exam_group.id}}).maximum_marks%></td>
+            <%c2=0%>
+            <%fa_3_4_set=true%>
+          <%end%>
+        <%end%>
+      <%end%>
+    </tr>
+    <tr class="tr-head">
+      <td></td>
+      <td></td>
+      <td></td>
+      <%fa_1_2_set=false%>
+      <%fa_3_4_set=false%>
+      <%c1=0%>
+      <%c2=0%>
+      <%@subject.fa_groups.all(:conditions=>{:cce_exam_category_id=>@exam_group.cce_exam_category_id}).each do |ag|%>
+        <td colspan="2"><%=ag.name.split.last%></td>
+        <%if (ag.name.split.last=="FA1" or ag.name.split.last=="FA2") and fa_1_2_set==false%>
+          <%c1+=1%>
+          <%if c1==2%>
+            <td colspan="2">SA1</td>
+            <%c1=0%>
+            <%fa_1_2_set=true%>
+          <%end%>
+        <%elsif (ag.name.split.last=="FA3" or ag.name.split.last=="FA4") and fa_3_4_set==false%>
+          <%c2+=1%>
+          <%if c2==2%>
+            <td colspan="2">SA2</td>
+            <%c2=0%>
+            <%fa_3_4_set=true%>
+          <%end%>
+        <%end%>
+      <%end%>
+    </tr>
+    <tr class="tr-head">
+      <td>BOARD REG.NO</td>
+      <td>ROLL NO</td>
+      <td>NAME</td>
+      <%@subject.fa_groups.all(:conditions=>{:cce_exam_category_id=>@exam_group.cce_exam_category_id}).each do |ag|%>
+        <td>Obt.</td>
+        <td>WT - <%=ag.cce_exam_category.cce_weightages.first(:conditions=>{:criteria_type=>'FA'}).weightage%></td>
+        <%@sa=ag.cce_exam_category.cce_weightages.first(:conditions=>{:criteria_type=>'SA'}).weightage%>
+      <%end%>
+      <td>Obt.</td>
+      <td>WT - <%=@sa%></td>
+    </tr>
+    <% @students.each do |s| %>
+      <tr class="tr-<%= cycle('odd', 'even') %>">
+        <td class="col-3"></td>
+        <% if roll_number_enabled? %>
+          <td class="col-3"> <%=s.roll_number.present? ? "#{s.roll_number}" : '' %></td>
+        <% else %>
+          <td class="col-3"><%=""%></td>
+        <% end %>
+        <td class="col-3"><%=s.full_name%></td>
+        <% st=@fa_score_hash.find{|c,v| c==s.id} %>
+        <% if st %>
+          <%fa_1_2_set=false%>
+          <%fa_3_4_set=false%>
+          <%c1=0%>
+          <%c2=0%>
+          <%@subject.fa_groups.all(:conditions=>{:cce_exam_category_id=>@exam_group.cce_exam_category_id}).each do |ag|%>
+            <% sc=@fa_score_hash[s.id][@subject.id.to_s] %>
+            <% if sc  %>
+              <td class="col-3"><%= @fa_score_hash[s.id][@subject.id.to_s][ag.name.split.last]['mark'] %></td>
+              <%mark=@fa_score_hash[s.id][@subject.id.to_s][ag.name.split.last]['mark']*(ag.cce_exam_category.cce_weightages.first(:conditions=>{:criteria_type=>'FA'}).weightage)%>
+              <td class="col-3"><%=(mark.is_a?String)?"-":(mark/100).to_f.round(2)  %></td>
+              <%if (ag.name.split.last=="FA1" or ag.name.split.last=="FA2") and fa_1_2_set==false%>
+                <%c1+=1%>
+                <%if c1==2%>
+                  <td class="col-3"><%= @fa_score_hash[s.id][@subject.id.to_s]["SA1"]['mark'] %></td>
+                  <% mark=@fa_score_hash[s.id][@subject.id.to_s]["SA1"]['mark']*(ag.cce_exam_category.cce_weightages.first(:conditions=>{:criteria_type=>'SA'}).weightage)%>
+                  <td class="col-3"><%=(mark.is_a?String)?"-":(mark/100).to_f.round(2)%></td>
+                  <%c1=0%>
+                  <%fa_1_2_set=true%>
+                <%end%>
+              <%elsif (ag.name.split.last=="FA3" or ag.name.split.last=="FA4") and fa_3_4_set==false%>
+                <%c2+=1%>
+                <%if c2==2%>
+                  <td class="col-3"><%= @fa_score_hash[s.id][@subject.id.to_s]["SA2"]['mark'] %></td>
+                  <%mark=@fa_score_hash[s.id][@subject.id.to_s]["SA2"]['mark']*(ag.cce_exam_category.cce_weightages.first(:conditions=>{:criteria_type=>'SA'}).weightage)%>
+                  <td class="col-3"><%= (mark.is_a?String)?"-":(mark/100).to_f.round(2) %></td>
+                  <%c2=0%>
+                  <%fa_3_4_set=true%>
+                <%end%>
+              <%end%>
+            <% else %>
+              <%6.times do%>
+                <td class="col-3">-</td>
+              <%end%>
+            <% end %>
+          <% end %>
+        <% else %>
+          <%6.times do%>
+            <td class="col-3">-</td>
+          <%end%>
+        <% end %>
+      </tr>
+    <% end %>
+  <% end %>
+</table>
+<%  unless  @students.empty? or @fa_score_hash.empty?%>
+  <div class="button">
+    <div class="pdf-button">
+      <%= link_to "► CSV Export", {:controller => "cce_reports", :action => "generate_cbse_scholastic_report_csv",:batch_id=>@batch.id,:exam_group_id=>@exam_group.id,:subject_id=>@subject.id},:style=>"color:#fff !important;",:target => '_blank' %>
+    </div>
+  </div>
+<% end %>

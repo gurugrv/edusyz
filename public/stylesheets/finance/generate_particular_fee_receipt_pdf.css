@@ -1,0 +1,262 @@
+#page-yield{
+    font-family: arial !important;
+}
+.hor_line{
+    width:100%;
+    background: #999;
+    height: 1px;
+    float:left;
+}
+.light_hor_line{
+    width:100%;
+    background: #ccc;
+    height: 1px;
+    float:left;
+}
+#receipt_text{
+    float: left;
+    font-size: 20px;
+    font-weight:lighter;
+    padding:10px 0px;
+    font-family: Arial;
+    width:50%;
+    margin-left:30px;
+}
+#receipt_val_text{
+    float: right;
+    font-size: 20px;
+    font-weight:lighter;
+    padding:10px 0px;
+    font-family: Arial;
+    width:40%;
+    text-align: right;
+    margin-right:20px;
+}
+#receipt_val_text span{
+    color:#000;
+    font-weight:bold;
+}
+.title_section{
+    float:left;
+    width:100%;
+    color:#666;
+    margin-bottom:20px;
+}
+#sub_text_left{
+    text-align: left;
+    margin-left:30px;
+    font-size: 17px;
+    font-weight:lighter;
+    padding:10px 0px;
+    font-family: Arial;
+    color:#666;
+    float:left;
+}
+#sub_text_right{
+    text-align: right;
+    margin-right:50px;
+    font-size: 17px;
+    font-weight:lighter;
+    padding:10px 0px;
+    font-family: Arial;
+    color:#666;
+    float:right;
+}
+.subsection{
+    float:left;
+    width:100%;
+}
+.left_section{
+    float:left;
+    width:50%;
+}
+.right_section{
+    float:right;
+    max-width: 50%;
+    max-height: 30px;
+}
+.combined_sec{
+    float:left;
+    margin-top:30px;
+    max-height: 30px;
+}
+.label_sec{
+    float:left;
+    font-size: 14px;
+    min-width: 120px
+}
+.value_sec{
+    float:left;
+    font-size: 14px;
+    min-width: 120px;
+    max-width: 280px;
+    word-break: break-word;
+}
+
+#pdf-header{
+    width:800px;
+    overflow: hidden;
+    height:100px;
+}
+
+.logo{
+    height: 700px;
+    width:70px;
+    float: left;
+    margin-top:-8px;
+}
+.logo img{
+    width: 100%;
+}
+
+.header-content{
+    color: #000;
+    font-family: arial;
+    font-weight: bold;
+    font-size: 17px;
+    float: left;
+    width: 635px;
+    word-wrap:break-word;
+    margin-left:30px;
+}
+
+.header-content p{
+    margin-top: 3px;
+    margin-bottom: 2px;
+    margin-right: 10px;
+}
+.header-content p.institution_address{
+    font-weight: normal !important;
+    color: #000 !important;
+    margin-top: 10px !important;
+    font-size: 16px;
+}
+#basic_info_section{
+    float:left;
+    width:100%;
+    margin-left:30px;
+}
+.particalar_name{
+    float:left;
+    width: 30%;
+    font-size: 16px;
+    font-weight: normal;
+}
+.particalar_amount{
+    float:right;
+    max-width: 25%;
+    font-size: 16px;
+    font-weight: normal;
+    margin-right: 50px;
+}
+.slno{
+    float:left;
+    font-size: 16px;
+    font-weight: normal;
+    margin-left:30px;
+    margin-right:5px
+}
+.particalars_list{
+    width:100%;
+    float:left;
+    margin-bottom: 20px;
+    margin-top:-20px
+}
+.addln_20_margin{
+    margin-top:10px;
+}
+.right_total{
+    float:right;
+    width:40%;
+    margin-right:20px;
+    line-height: 30px;
+    margin-top:10px;
+}
+.addl_5_margin{
+    margin-top:-5px;
+}
+.right_total_label{
+    float:left;
+    width:50%;
+    word-break: break-word;
+    margin-right:10px;
+}
+.right_total_amount{
+    float:right;
+    margin-right: 30px;
+}
+.left_info{
+    margin-top:10px;
+    float:left;
+    width:50%;
+    margin-right:20px;
+    line-height: 30px;
+}
+.left_info_label{
+    float:left;
+    max-width:70%;
+    min-width:40%;
+    word-break: break-word;
+    margin-right:10px;
+    margin-left:20px;
+}
+.left_info_value{
+    float:left;
+    width:30%;
+}
+.label_collection_part{
+    float:left;
+    width:100%;
+    color:#999;
+
+}
+.label_part{
+    float:left;
+    width:35%;
+    margin-right:20px;
+}
+.student_name{
+    font-size:17px;
+    font-weight: bold;
+
+}
+.value_part{
+    float:left;
+    width:35%;
+    margin-top:10px;
+    margin-bottom:10px;
+    margin-right:20px;
+}
+.width_20{
+    width:20%;
+    margin-right:0px;
+}
+.small_text{
+    font-size: 13px;
+    margin-right:40px;
+}
+i{
+    height:20px;
+    width:20px;
+    float:left;
+    background: url(/images/iconsprite-1.png) no-repeat center;
+    background-position: 1px -200px;
+}
+.note_text{
+    font-size: 12px;
+    color:#999;
+    margin-left:30px;
+}
+.add_width{
+    width:80%;
+}
+.value_collection_part{
+    float:left;
+    width:100%;
+    margin-bottom:20px;
+}
+.page-break {
+    display:block;
+    clear:both;
+    page-break-after:always;
+}

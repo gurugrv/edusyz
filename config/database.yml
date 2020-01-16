@@ -1,0 +1,29 @@
+development:
+      host: localhost
+      adapter: mysql
+      database: edusyz
+      port: 3306
+      username: root
+      password: up32cx9011
+      encoding: utf8
+
+test: &test
+      host: localhost
+      adapter: mysql
+      database: edusyz
+      port: 3306
+      username: root
+      password: up32cx9011
+      encoding: utf8
+
+production:
+      host: localhost
+      adapter: mysql
+      database: edusyz 
+      port: 3306
+      username: root
+      password: up32cx9011
+      encoding: utf8
+
+cucumber:
+  <<: *test

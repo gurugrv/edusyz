@@ -1,0 +1,6 @@
+<div class="label-field-pair">
+  <label for="observation_groups">Select Observation Group</label>
+  <div  class="text-input-bg" id="exam-group-select">
+    <%=select :subject_report,:observation_group_id, @observation_groups.map{|a| [a.name,a.id]},:prompt=> "Select Observation Group" %>
+  </div>
+</div>

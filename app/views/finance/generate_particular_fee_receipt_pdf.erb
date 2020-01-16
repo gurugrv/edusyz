@@ -1,0 +1,158 @@
+<% @direction = (rtl?) ? 'rtl/' : '' %>
+<% content_for :head do  %>
+  <%= wicked_pdf_stylesheet_link_tag(@direction+"finance/generate_particular_fee_receipt_pdf") -%>
+<% end %>
+<%@fts_hash.each do |k,v|%>
+  <div id="page-yield">
+    <%=render :partial=>'fee_report_header',:locals=>{:v=>v}%>
+    <%total_fine_amount=0%>
+    <%unless v["particular_payments"].blank? and v["instant_fee_details"].blank?%>
+      <div class="subsection">
+        <div class="light_hor_line"></div>
+        <div id="sub_text_left"><%=t('particulars')%></div>
+        <div id="sub_text_right"><%=t('amount')%> (<%= v["currency"] %>)</div>
+      </div>
+      <%total_amount=0%>
+      <%total_discount=0%>
+      <%total_amount_paid=0%>
+
+      <%if v["finance_type"] == 'FinanceFee'%>
+        <%v["particular_payments"].each_with_index do |fp,i|%>
+          <div class="subsection">
+            <div class="light_hor_line" style='margin-top:-30px;'></div>
+          </div>
+          <div class="particalars_list">
+            <div class="slno"><%=i+1%>.</div>
+            <div class="particalar_name"><%=fp.particular_name%></div>
+            <div class="right_total addl_5_margin">
+              <div class="right_total_label"><%=t('actual_amount')%></div>
+              <div class="right_total_amount"><%= precision_label fp.particular_amount %></div>
+              <%rem_balance=precision_label(fp.particular_amount.to_f - previous_payments(k,fp.particular_id).to_f)%>
+              <div class="right_total_label"><%=t('remaining_balance')%></div>
+              <div class="right_total_amount"><%= precision_label rem_balance %></div>
+              <%total_amount+=precision_label(fp.particular_amount).to_f%>
+              <%if fp.payment_discount.present?%>
+                <div class="right_total_label"><%=t('discount')%></div>
+                <div class="right_total_amount"><%= precision_label(fp.payment_discount)%></div>
+                <%total_discount+=precision_label(fp.payment_discount).to_f%>
+              <%end%>
+              <%amount_paid=fp.payment_amount.to_f-fp.payment_discount.to_f%>
+              <b><div class="right_total_label"><%=t('amount_paid')%></div>
+                <div class="right_total_amount"><%= precision_label(amount_paid) %></div></b>
+              <%total_amount_paid+=precision_label(amount_paid).to_f%>
+              <%balance=precision_label(fp.particular_amount.to_f - previous_payments(k,fp.particular_id).to_f - (amount_paid+fp.payment_discount.to_f))%>
+              <div class="right_total_label"><%=t('balance')%></div>
+              <div class="right_total_amount"><%= balance %></div>
+            </div>
+          </div>
+        <%end%>
+      <%elsif v["finance_type"] == 'InstantFee'%>
+        <%v["instant_fee_details"].each_with_index do |ifd,i|%>
+          <div class="subsection">
+            <div class="light_hor_line" style='margin-top:-30px;'></div>
+          </div>
+          <div class="particalars_list">
+            <div class="slno"><%=i+1%>.</div>
+            <div class="particalar_name"><%=ifd.particular_name%></div>
+            <div class="right_total addl_5_margin">
+              <div class="right_total_label"><%=t('total_amount')%></div>
+              <div class="right_total_amount"><%= precision_label ifd.amount %></div>
+              <%total_amount+=precision_label(ifd.amount).to_f%>
+              <%if ifd.discount.present? and ifd.discount!=0.0%>
+                <div class="right_total_label"><%=t('discount')%></div>
+                <div class="right_total_amount"><%= precision_label((ifd.discount/100)*ifd.amount)%></div>
+                <%total_discount+=precision_label((ifd.discount/100)*ifd.amount).to_f%>
+              <%end%>
+              <b><div class="right_total_label"><%=t('amount_paid')%></div>
+                <div class="right_total_amount"><%= precision_label ifd.net_amount %></div></b>
+              <%total_amount_paid+=precision_label(ifd.net_amount).to_f%>
+            </div>
+          </div>
+        <%end%>
+      <%end%>
+    <%end%>
+    <%unless precision_label(v["fine_amount"]).to_f == 0.0%>
+      <div class="subsection">
+        <div class="light_hor_line"></div>
+        <div id="sub_text_left"><%=t('fine')%></div>
+        <div id="sub_text_right"><%=t('amount')%> (<%= currency %>)</div>
+        <div class="light_hor_line"></div>
+        <div class="extender"></div>
+      </div>
+      <%i=0%>
+      <%if v["finance_type"] == 'FinanceFee'%>
+        <%if v["auto_fine"].to_f > 0.0%>
+          <div class="particalars_list addln_20_margin">
+            <div class="slno"><%=i+=1%>.</div>
+            <div class="particalar_name"><%= v["fine_rule"].fine.name %>(<%= t('fine') %>)</div>
+            <div class="right_total addl_5_margin">
+              <div class="right_total_label"><%=t('total_amount')%></div>
+              <div class="right_total_amount"><%= precision_label v["fine_amount"] %></div>
+              <%total_fine_amount+=v["fine_amount"].to_f%>
+            </div>
+          </div>
+          <% fine_paid=v["auto_fine"].to_f %>
+          <% extra_fine=v["fine_amount"].to_f-fine_paid %>
+          <% if precision_label(extra_fine) > precision_label(0) %>
+            <div class="particalars_list addln_20_margin">
+              <div class="slno"><%=i+=1%>.</div>
+              <div class="particalar_name"><%= t('fine_on') %> <%= format_date(v["transaction_date"]) %></div>
+              <div class="right_total addl_5_margin">
+                <div class="right_total_label"><%=t('total_amount')%></div>
+                <div class="right_total_amount"><%= precision_label(extra_fine) %></div>
+                <%total_fine_amount+=extra_fine.to_f%>
+              </div>
+            </div>
+          <% end %>
+        <%else%>
+          <div class="particalars_list addln_20_margin">
+            <div class="slno"><%=i+=1%>.</div>
+            <div class="particalar_name"><%= t('fine_on') %> <%= format_date(v["transaction_date"]) %></div>
+            <div class="right_total addl_5_margin">
+              <div class="right_total_label"><%=t('total_amount')%></div>
+              <div class="right_total_amount"><%= precision_label v["fine_amount"] %></div>
+              <%total_fine_amount+=v["fine_amount"].to_f%>
+            </div>
+          </div>
+        <%end%>
+      <%end%>
+    <%end%>
+    <div class="subsection">
+      <div class="light_hor_line"></div>
+    </div>
+    <div class="left_info">
+      <div class="left_info_label"><%=t('payment_mode')%> <span style="float:right;">:</span></div>
+      <div class="left_info_value"><%= v["payment_mode"] %></div>
+      <%if v["reference_no"].present?%>
+        <%if v["payment_mode"] == "Online Payment"%>
+          <div class="left_info_label"><%=t('transaction_id')%> <span style="float:right;">:</span></div>
+        <%elsif v["payment_mode"] == "Cheque"%>
+          <div class="left_info_label"><%=t('cheque_no')%> <span style="float:right;">:</span></div>
+        <%elsif v["payment_mode"] == "DD"%>
+          <div class="left_info_label"><%=t('dd_no')%> <span style="float:right;">:</span></div>
+        <%else%>
+          <div class="left_info_label"><%=t('reference_no')%> <span style="float:right;">:</span></div>
+        <%end%>
+        <div class="left_info_value"><%= v["reference_no"] %></div>
+      <%end%>
+      <%if v["payment_note"].present?%>
+        <div class="left_info_label"><%=t('notes')%></div>
+        <br></br>
+        <div class="left_info_value note_text add_width"><%= v["payment_note"] %></div>
+      <%end%>
+    </div>
+    <%unless v["particular_payments"].blank? and v["instant_fee_details"].blank?%>
+      <div class="right_total">
+        <div class="right_total_label"><%=t('total_amount')%></div>
+        <div class="right_total_amount"><%= precision_label(total_amount+total_fine_amount) %></div>
+        <%unless total_discount == 0.0%>
+          <div class="right_total_label"><%=t('total_discount')%></div>
+          <div class="right_total_amount"><%= precision_label(total_discount) %></div>
+        <%end%>
+        <b><div class="right_total_label"><%=t('total_amount_paid')%></div>
+          <div class="right_total_amount"><%= precision_label(total_amount_paid+total_fine_amount) %></div></b>
+      </div>
+    <%end%>
+  </div>
+  <div class="page-break"></div>
+<%end%>

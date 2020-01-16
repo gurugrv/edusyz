@@ -1,0 +1,81 @@
+<%-# Fedena
+#Copyright 2010 Foradian Technologies Private Limited
+#
+#This product includes software developed at
+#Project Fedena - http://www.projectfedena.org/
+#
+#Licensed under the Apache License, Version 2.0 (the "License");
+#you may not use this file except in compliance with the License.
+#You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#Unless required by applicable law or agreed to in writing,
+#software distributed under the License is distributed on an
+#"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+#KIND, either express or implied.  See the License for the
+#specific language governing permissions and limitations
+#under the License. -%>
+
+<div id="content-header">
+  <%= show_header_icon %>
+  <h1>IA Scores</h1>
+  <div class='header-sep'>|</div>
+  <div class='sub-header'>Enter IA Scores</div>
+</div>
+<div id="page-yield">
+  <div class="bread_crumb">
+    <% breadcrumb :ia_scores, @exam%>
+    <%= render_breadcrumbs  %>
+  </div>
+  <div id="flash-box">
+    <% unless flash[:notice].nil? %>
+      <p class="flash-msg"> <%= flash[:notice] %> </p>
+    <% end %>
+  </div>
+  <% unless flash[:warn_notice].nil? %>
+    <div id="errorExplanation" class="errorExplanation"><%= flash[:warn_notice] %> </div>
+  <% end %>
+  <div id="form-errors"></div>
+  <% unless @icse_weightage_error%>
+    <%if @ia_group.present?%>
+      <% if roll_number_enabled? %>
+        <div class="">
+          <form id="sort_form" action="#"  onchange="this.submit()">
+            <label id="form_label"><%= t('sort_by') %></label>
+            <input id="sort_by_name" value="name" name="student_order" type="radio"  class="sort_by_input" <% if params[:student_order] != 'roll_number'  %> checked="checked" <% end %> >
+            <label for="sort_by_name" class="sort_by_label" id="sort_by_name_label"><%= t('name') %></label>
+            <input id="sort_by_roll_number" value="roll_number" name="student_order" type="radio" class="sort_by_input" <% if params[:student_order] == 'roll_number'  %> checked="checked" <% end %>>
+            <label for="sort_by_roll_number" class="sort_by_label" id="sort_by_roll_number_label"><%= t('roll_number_text') %></label>
+          </form>
+        </div>
+      <% end %>
+      <div id="student_list"><%= render :partial=>'student_list' %></div>
+      <div id="fa_sheet"><%= render :partial=>'ia_sheet' %></div>
+    <% else %>
+      <div id="flash-box">
+        <p class="flash-msg"> No IA Group assigned to this subject </p>
+      </div>
+    <% end %>
+  <% else %>
+    <div id="flash-box">
+      <p class="flash-msg"> No IA Weightage assigned to this subject </p>
+    </div>
+  <% end %>
+
+</div>
+<script type="text/javascript">
+  function set_active(){
+    $$('.active-link').each(function(e){
+      e.removeClassName('active-link');
+    });
+    this.addClassName('active-link')
+  }
+
+  document.observe("dom:loaded", function() {
+    $$('.student-link').invoke('observe','click',draw_report);
+    $$('.student-link').invoke('observe','click',set_active);
+    set_active.call($('<%=@student.id%>'))
+  });
+
+</script>

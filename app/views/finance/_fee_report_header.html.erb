@@ -1,0 +1,92 @@
+<div id="pdf-header">
+  <div class="logo">
+    <%= wicked_pdf_image_tag current_school_detail.logo,:s3=>true,:style=>:original,:timestamp=>false %>
+  </div>
+  <div class="header-content">
+    <p><%=Configuration.get_config_value('InstitutionName'); %></p>
+    <p class="institution_address"><%=Configuration.get_config_value('InstitutionAddress'); %></p>
+  </div>
+
+</div>
+<div class="title_section">
+  <div class="hor_line"></div>
+  <div id="receipt_text"><%= t('fee_reciept') %></div>
+  <div id="receipt_val_text"><%=t('receipt_no')%>: <span><%= v["receipt_no"] %></span></div>
+  <div class="hor_line"></div>
+  <div class="extender"></div>
+</div>
+<div id="basic_info_section">
+  <%if v["payee"]["type"] == "Student"%>
+    <div class="label_collection_part">
+      <div class="label_part"><%=t('single_student')%></div>
+      <div class="label_part"><%=t('course_text')%></div>
+      <% if roll_number_enabled? and v["payee"]["roll_number"].present? %>
+        <div class="label_part width_20"><%=t('roll_no')%></div>
+      <%else%>
+        <div class="label_part width_20"> <%=t('admission_number')%></div>
+      <%end%>
+    </div>
+    <div class="value_collection_part">
+      <% unless roll_number_enabled? and v["payee"]["roll_number"].present? %>
+        <div class="value_part student_name"><%=v["payee"]["full_name"]%></div>
+
+      <%else%>
+        <div class="value_part student_name"><%=v["payee"]["full_name"]%> &#x200E;(<%=v["payee"]["admission_no"]%>)&#x200E;</div>
+      <%end%>
+      <div class="value_part"><%=v["payee"]["full_course_name"]%></div>
+      <% if roll_number_enabled? and v["payee"]["roll_number"].present? %>
+        <div class="value_part width_20"><%=v["payee"]["roll_number"]%></div>
+      <%else%>
+        <div class="value_part width_20"><%=v["payee"]["admission_no"]%></div>
+      <%end%>
+    </div>
+  <%elsif v["payee"]["type"] == "Employee"%>
+    <div class="label_collection_part">
+      <div class="label_part"><%=t('employee_text')%></div>
+      <div class="label_part"><%=t('employee_number')%></div>
+      <div class="label_part width_20"><%=t('department')%></div>
+    </div>
+    <div class="value_collection_part">
+      <div class="value_part student_name"><%=v["payee"]["full_name"]%></div>
+      <div class="value_part"><%=v["payee"]["employee_number"]%></div>
+      <div class="value_part width_20"><%=v["payee"]["employee_department_name"]%></div>
+    </div>
+  <%else%>
+    <div class="label_collection_part">
+      <div class="label_part"><%=t('guest_text')%></div>
+    </div>
+    <div class="value_collection_part">
+      <div class="value_part student_name"><%=v["payee"]["full_name"]%></div>
+    </div>
+  <%end%>
+  <div class="label_collection_part">
+    <%if v["finance_type"] == 'FinanceFee'%>
+      <div class="label_part"><%=t('finance_fee_collection')%></div>
+    <%elsif v["finance_type"] == 'HostelFee'%>
+      <div class="label_part"><%=t('hostel_fee_collection')%></div>
+    <%elsif v["finance_type"] == 'TransportFee'%>
+      <div class="label_part"><%=t('transport_fee_collection')%></div>
+    <%elsif v["finance_type"] == 'InstantFee'%>
+      <div class="label_part"><%=t('instant_fee_category')%></div>
+    <%end%>
+    <%unless v["finance_type"] == 'InstantFee'%>
+      <div class="label_part"><%=t('due_date')%></div>
+    <%end%>
+    <div class="label_part width_20"><%=t('payment_date')%></div>
+  </div>
+  <div class="value_collection_part">
+    <%if v["finance_type"] == 'FinanceFee'%>
+      <div class="value_part"><%=v["collection"].name%></div>
+      <div class="value_part"><%=format_date(v["due_date"],:format=>:short_date)%></div>
+    <%elsif v["finance_type"] == 'HostelFee'%>
+      <div class="value_part"><%=v["collection"].name%></div>
+      <div class="value_part"><%=format_date(v["collection"].due_date,:format=>:short_date)%></div>
+    <%elsif v["finance_type"] == 'TransportFee'%>
+      <div class="value_part"><%=v["collection"].name%></div>
+      <div class="value_part"><%=format_date(v["collection"].due_date,:format=>:short_date)%></div>
+    <%elsif v["finance_type"] == 'InstantFee'%>
+      <div class="value_part"><%=v["collection"].category_name%></div>
+    <%end%>
+    <div class="value_part width_20"><%=format_date(v["transaction_date"],:format=>:short_date)%></div>
+  </div>
+</div>
