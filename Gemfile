@@ -38,7 +38,7 @@ gem 'sprockets','2.1.2'
 gem 'thor','0.14.6'
 gem 'tilt','1.3.3'
 gem 'treetop','1.4.10'
-gem 'tzinfo','0.3.31'
+gem 'tzinfo','0.3.61'
 gem 'validatable','1.6.7'
 gem 'vote_fu','0.0.11'
 
